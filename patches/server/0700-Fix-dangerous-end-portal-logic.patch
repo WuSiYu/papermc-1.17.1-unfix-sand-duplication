@@ -56,32 +56,7 @@ index 5703949d5ffa56602418d40a85f2fa1827690254..4f1a57c24688d1ae537f5fd1c1649e03
              }
  
              this.processPortalCooldown();
-+            this.tickEndPortal(); // Paper - make end portalling safe
++            //this.tickEndPortal(); // Paper - make end portalling safe
          }
      }
  
-diff --git a/src/main/java/net/minecraft/world/level/block/EndPortalBlock.java b/src/main/java/net/minecraft/world/level/block/EndPortalBlock.java
-index 739c9c3a49fd3893ac39962a02a5e3620dc4fe06..62c2f947a77570228dfdf4dae16c64eb97ee2f40 100644
---- a/src/main/java/net/minecraft/world/level/block/EndPortalBlock.java
-+++ b/src/main/java/net/minecraft/world/level/block/EndPortalBlock.java
-@@ -53,16 +53,10 @@ public class EndPortalBlock extends BaseEntityBlock {
-                 // return; // CraftBukkit - always fire event in case plugins wish to change it
-             }
- 
--            // CraftBukkit start - Entity in portal
--            EntityPortalEnterEvent event = new EntityPortalEnterEvent(entity.getBukkitEntity(), new org.bukkit.Location(world.getWorld(), pos.getX(), pos.getY(), pos.getZ()));
--            world.getCraftServer().getPluginManager().callEvent(event);
--
--            if (entity instanceof ServerPlayer) {
--                ((ServerPlayer) entity).changeDimension(worldserver, PlayerTeleportEvent.TeleportCause.END_PORTAL);
--                return;
--            }
--            // CraftBukkit end
--            entity.changeDimension(worldserver);
-+            // Paper start - move all of this logic into portal tick
-+            entity.portalWorld = ((ServerLevel)world);
-+            entity.portalBlock = pos.immutable();
-+            // Paper end - move all of this logic into portal tick
-         }
- 
-     }
